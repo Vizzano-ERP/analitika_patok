@@ -1,10 +1,13 @@
-from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from  .product import ProductViewSet
+from .views import (
+    ProductViewSet, ProductionLineViewSet,
+    PatokDailyIshViewSet, SoatlikProductPatokViewSet
+)
 
 router = DefaultRouter()
 router.register('products', ProductViewSet)
+router.register('production-lines', ProductionLineViewSet)
+router.register('daily-production', PatokDailyIshViewSet)
+router.register('hourly-production', SoatlikProductPatokViewSet)
 
-urlpatterns = [
-    path('', include(router.urls)),
-]
+urlpatterns = router.urls

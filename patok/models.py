@@ -6,7 +6,9 @@ class Product(models.Model):
     """Mahsulot"""
     name = models.CharField(max_length=100)
     time_per_unit = models.IntegerField(help_text="Bir dona mahsulot uchun ketadigan vaqt (minutda)")
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.name
 
@@ -17,64 +19,56 @@ class ProductionLine(models.Model):
         default=500,
         help_text="Bir ishchining bir kundagi ishlash vaqti (minutda)"
     )
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.name
 
-class DailyProduction(models.Model):
-    """Kunlik ishlab chiqarish"""
-    date = models.DateField()
+
+class PatokDailyIsh(models.Model):
+    """Patok kunlik ishlab chiqarish"""
     production_line = models.ForeignKey(ProductionLine, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product, through='DailyProductionProduct')
     workers_count = models.IntegerField(help_text="Ishchilar soni")
-    
+    productlar = models.ManyToManyField('PatokDailyProducts', related_name='daily_production_product')
     total_minutes = models.IntegerField(
         help_text="Umumiy ishchi vaqti (workers_count * worker_time_per_day)",
         editable=False
     )
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def save(self, *args, **kwargs):
         # Umumiy ishchi vaqtini hisoblash
         self.total_minutes = self.workers_count * self.production_line.worker_time_per_day
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.date} - {self.production_line}"
-
-class DailyProductionProduct(models.Model):
-    """Kunlik ishlab chiqarish mahsuloti"""
-    daily_production = models.ForeignKey(DailyProduction, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    expected_quantity = models.FloatField(help_text="Kutilayotgan mahsulot soni", editable=False)
-    actual_quantity = models.IntegerField(default=0, help_text="Haqiqiy ishlab chiqarilgan mahsulot soni")
+        return f"{self.production_line} - {self.workers_count}"
     
-    def save(self, *args, **kwargs):
-        # Kutilayotgan mahsulot sonini hisoblash
-        self.expected_quantity = (
-            self.daily_production.total_minutes / self.product.time_per_unit
-        )
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.daily_production.date} - {self.product}"
-
-class ProductionHourlyRecord(models.Model):
-    """Soatlik ishlab chiqarish qaydnomasi"""
-    daily_production = models.ForeignKey(DailyProduction, on_delete=models.CASCADE)
+class PatokDailyProducts(models.Model):
+    """Patok kunlik ishlab chiqarish mahsuloti"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    quantity = models.IntegerField(help_text="Shu vaqtgacha qilingan mahsulot soni")
-    minutes_spent = models.IntegerField(help_text="Ushbu mahsulot uchun sarflangan vaqt (minutda)")
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        # Kunlik mahsulot ishlab chiqarish miqdorini yangilash
-        daily_product, created = DailyProductionProduct.objects.get_or_create(
-            daily_production=self.daily_production, product=self.product
-        )
-        daily_product.actual_quantity = self.quantity
-        daily_product.save()
-
+    kutilayotgan = models.FloatField(help_text="Kutilayotgan mahsulot soni", editable=False)
+    real_ish = models.IntegerField(default=0, help_text="Haqiqiy ishlab chiqarilgan mahsulot soni")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+        
     def __str__(self):
-        return f"{self.timestamp} - {self.product} - {self.quantity}"
+        return f"{self.product} - {self.real_ish}"
+    
 
+
+
+class SoatlikProductPatok(models.Model):
+    """Soatlik mahsulot patok"""
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    patok = models.ForeignKey(ProductionLine, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0, help_text="Bir soatda ishlab chiqariladigan mahsulot soni'")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.product} - {self.quantity}"
+    
+    
