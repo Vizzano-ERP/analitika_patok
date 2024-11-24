@@ -129,7 +129,7 @@ class PatokishSerializer(serializers.Serializer):
 
 class HourlyProductPatokSerializer(serializers.Serializer):
     date = serializers.DateField()
-    patok = serializers.IntegerField()
+    patok_id = serializers.IntegerField()
     product = serializers.IntegerField()
     quantity = serializers.IntegerField()
     

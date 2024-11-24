@@ -63,21 +63,27 @@ class PatokDailyProducts(models.Model):
     def __str__(self):
         return f"{self.product} - {self.real_ish}"
     
-
+class Clock(models.Model):
+    clock = models.TimeField()
+    def __str__(self) -> str:
+        return f'{self.clock}'
 
 
 class SoatlikProductPatok(models.Model):
     """Soatlik mahsulot patok"""
+    patok  = models.ForeignKey(ProductionLine,on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    proddailyproduct  =  models.ForeignKey(PatokDailyProducts, on_delete=models.CASCADE)
-    productdailyish = models.ForeignKey(PatokDailyIsh, on_delete=models.CASCADE)
-    patok = models.ForeignKey(ProductionLine, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=0, help_text="Bir soatda ishlab chiqariladigan mahsulot soni'")
-    clock= models.DateTimeField()
+    clock = models.ForeignKey(Clock,on_delete=models.CASCADE)
+    patokdailyish = models.ForeignKey(PatokDailyIsh,on_delete=models.CASCADE)
+    patokproducts = models.ForeignKey(PatokDailyProducts,on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.product} - {self.quantity}"
+        return f"{self.product} - {self.patok}"
+    
+
+
     
     
