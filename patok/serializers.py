@@ -21,9 +21,9 @@ class ProductionLineSerializer(serializers.ModelSerializer):
             'id', 
             'name', 
             'worker_time_per_day',
-              'created_at',
-              'updated_at'
-              ]
+            'created_at',
+            'updated_at'
+        ]
 
 class PatokDailyIshProductsSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
@@ -97,3 +97,32 @@ class SoatlikProductPatokCreateUpdateSerializer(serializers.ModelSerializer):
 
 
    
+class PatokbyDate(serializers.Serializer):
+    date = serializers.ListField(child=serializers.DateField())
+
+    def validate_date(self, value):
+        # datetimeligni tekshirish kerak 
+        for date in value:
+            if date > timezone.now().date():
+                raise serializers.ValidationError("Kun bugundan katta bo'lishi mumkin emas")
+        return value
+    
+
+
+from rest_framework import serializers
+from datetime import datetime
+class PatokishSerializer(serializers.Serializer):
+    production_line = serializers.IntegerField()
+    workers_count = serializers.IntegerField()
+    productlar = serializers.ListField(child=serializers.IntegerField(),required=True)
+
+    def validate(self, attrs):
+        now = datetime.now()
+        patok_id = attrs['production_line']
+        if PatokDailyIsh.objects.filter(production_line=patok_id, created_at__date=now.date()).exists():
+            raise serializers.ValidationError("Bu patok uchun kunlik ish mavjud")
+        if attrs['workers_count'] <= 0:
+            raise serializers.ValidationError("Ishchilar soni 0 dan katta bo'lishi kerak")
+        if len(attrs['productlar']) == 0:
+            raise serializers.ValidationError("Mahsulotlar ro'yxati bo'sh bo'lishi mumkin emas")
+        return attrs

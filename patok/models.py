@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from django.utils import timezone
 from django.db.models import Sum
@@ -49,10 +50,15 @@ class PatokDailyIsh(models.Model):
 class PatokDailyProducts(models.Model):
     """Patok kunlik ishlab chiqarish mahsuloti"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    kutilayotgan = models.FloatField(help_text="Kutilayotgan mahsulot soni", editable=False)
+    kutilayotgan = models.FloatField(help_text="Kutilayotgan mahsulot soni", editable=False,default=0)
     real_ish = models.IntegerField(default=0, help_text="Haqiqiy ishlab chiqarilgan mahsulot soni")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # def save(self, *args, **kwargs):
+    #     # Kutilayotgan mahsulot sonini hisoblash
+    #     self.kutilayotgan = self.daily_ish.total_minutes / self.product.time_per_unit
+    #     super().save(*args, **kwargs)
         
     def __str__(self):
         return f"{self.product} - {self.real_ish}"

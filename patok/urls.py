@@ -1,13 +1,15 @@
-from rest_framework.routers import DefaultRouter
-from .views import (
-    ProductViewSet, ProductionLineViewSet,
-    PatokDailyIshViewSet, SoatlikProductPatokViewSet
-)
+from .views import ProductView,ProductDetail
+from .patokview import ProductionLineViewSet,ProductionLineDetail
+from .patokanaliz import  PatokAnalyticsView
+from .patokish import PatokDailyIshViewSet
+from django.urls import path
 
-router = DefaultRouter()
-router.register('products', ProductViewSet)
-router.register('production-lines', ProductionLineViewSet)
-router.register('daily-production', PatokDailyIshViewSet)
-router.register('hourly-production', SoatlikProductPatokViewSet)
+urlpatterns = [
+    path('product/', ProductView.as_view(), name='product'),
+    path('patokish/', PatokDailyIshViewSet.as_view(), name='patokish'),
+    path('patok/', ProductionLineViewSet.as_view(), name='patok'),
+    path('patok/<int:pk>/', ProductionLineDetail.as_view(), name='patok_detail'),
+    path('product/<int:pk>/', ProductDetail.as_view(), name='product_detail'),
+    path('patokanalytics/', PatokAnalyticsView.as_view(), name='patokanalytics'),
+]
 
-urlpatterns = router.urls
