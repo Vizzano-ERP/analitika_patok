@@ -1,6 +1,7 @@
 from .views import ProductView,ProductDetail
 from .patokview import ProductionLineViewSet,ProductionLineDetail
-from .patokanaliz import  PatokAnalyticsView
+# from .patokanaliz import  PatokAnalyticsView
+from .patokadata import PatokAnalyticsView
 from .patokish import PatokDailyIshViewSet
 from django.urls import path
 

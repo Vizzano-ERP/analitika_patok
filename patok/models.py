@@ -69,6 +69,8 @@ class PatokDailyProducts(models.Model):
 class SoatlikProductPatok(models.Model):
     """Soatlik mahsulot patok"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    proddailyproduct  =  models.ForeignKey(PatokDailyProducts, on_delete=models.CASCADE)
+    productdailyish = models.ForeignKey(PatokDailyIsh, on_delete=models.CASCADE)
     patok = models.ForeignKey(ProductionLine, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0, help_text="Bir soatda ishlab chiqariladigan mahsulot soni'")
     created_at = models.DateTimeField(auto_now_add=True)

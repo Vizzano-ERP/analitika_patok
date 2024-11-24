@@ -391,15 +391,15 @@ class PatokAnalyticsView(APIView):
                     'real_ish': patok_daily_ish.productlar.aggregate(Sum('real_ish'))['real_ish__sum'],
                     'expected_products': patok_daily_ish.productlar.aggregate(Sum('kutilayotgan'))['kutilayotgan__sum'],
                     'products_count': patok_daily_ish.productlar.count(),
-                    "products": [
-                        {
-                            "product_id": product.product.id,
-                            "product_name": product.product.name,
-                            "kutilayotgan": product.kutilayotgan,
-                            "real_ish": product.real_ish,
-                        } 
-                        for product in patok_daily_ish.productlar.all()
-                    ]
+                    # "products": [
+                    #     {
+                    #         "product_id": product.product.id,
+                    #         "product_name": product.product.name,
+                    #         "kutilayotgan": product.kutilayotgan,
+                    #         "real_ish": product.real_ish,
+                    #     } 
+                    #     for product in patok_daily_ish.productlar.all()
+                    # ]
                 }
                 analytics.append(daily_data)
 
@@ -415,7 +415,6 @@ class PatokAnalyticsView(APIView):
                 )
             )
 
-            # Mahsulotlar bo'yicha statistika
             products_stats = queryset.values(
                 'productlar__product__id',
                 'productlar__product__name'
@@ -449,3 +448,8 @@ class PatokAnalyticsView(APIView):
                 {'detail': str(e)}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+
+
+
