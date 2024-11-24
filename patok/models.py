@@ -73,6 +73,7 @@ class SoatlikProductPatok(models.Model):
     productdailyish = models.ForeignKey(PatokDailyIsh, on_delete=models.CASCADE)
     patok = models.ForeignKey(ProductionLine, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0, help_text="Bir soatda ishlab chiqariladigan mahsulot soni'")
+    clock= models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

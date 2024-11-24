@@ -126,3 +126,14 @@ class PatokishSerializer(serializers.Serializer):
         if len(attrs['productlar']) == 0:
             raise serializers.ValidationError("Mahsulotlar ro'yxati bo'sh bo'lishi mumkin emas")
         return attrs
+
+class HourlyProductPatokSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    patok = serializers.IntegerField()
+    product = serializers.IntegerField()
+    quantity = serializers.IntegerField()
+    
+    def validate(self, attrs):
+        if attrs['quantity'] <= 0:
+            raise serializers.ValidationError("Mahsulot soni 0 dan katta bo'lishi kerak")
+        return attrs
