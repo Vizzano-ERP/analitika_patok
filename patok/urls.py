@@ -14,3 +14,4 @@ urlpatterns = [
     path('patokanalytics/', PatokAnalyticsView.as_view(), name='patokanalytics'),
 ]
 
+
