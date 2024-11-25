@@ -2,7 +2,13 @@ from rest_framework import serializers
 from django.db.models import Sum, F, ExpressionWrapper, FloatField
 from django.utils import timezone
 from datetime import datetime, time
-from .models import Product, ProductionLine, PatokDailyIsh, PatokDailyProducts, SoatlikProductPatok
+from .models import Product, ProductionLine, PatokDailyIsh, PatokDailyProducts, SoatlikProductPatok,Clock
+
+class ClockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Clock
+        fields = ['id', 'clock']
+
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:

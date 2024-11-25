@@ -76,7 +76,8 @@ class SoatlikProductPatok(models.Model):
     clock = models.ForeignKey(Clock,on_delete=models.CASCADE)
     patokdailyish = models.ForeignKey(PatokDailyIsh,on_delete=models.CASCADE)
     patokproducts = models.ForeignKey(PatokDailyProducts,on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=0)
+    comment = models.TextField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

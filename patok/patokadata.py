@@ -44,11 +44,13 @@ class PatokAnalyticsView(APIView):
                 product = item.productlar.all().first()
                 patok_entry = {
                     'patok': item.production_line.name,
+                    'patok_id': item.production_line.id,
                     'workers_count': item.workers_count,
                     'total_minutes': item.total_minutes,
                     'products': [
                         {
                             'product_name': product.product.name,
+                            'product_id': product.product.id,
                             'product_time':product.product.time_per_unit,
                             'kutilayotgan': product.kutilayotgan,
                             'real_ish': product.real_ish,
