@@ -35,17 +35,16 @@ class Hourly(APIView):
                 soatlik_product.quantity = quantity
                 soatlik_product.save()
                 data = {}
-                real_ish = SoatlikProductPatok.objects.filter(created_at__date=sana,patok_id=patok_id,product_id=product_id).aggregate(Sum('quantity'))['quantity__sum']
+                real_ish = SoatlikProductPatok.objects.filter(created_at__date=sana,patok_id=patok_id,product_id=product_id).aggregate(Sum('quantity'))['quantity__sum'] or 0
                 data = {}
-                data['real_is'] = real_ish
-
+                print(real_ish)
+                data['real_ish'] = real_ish
+                return Response(data,status=status.HTTP_201_CREATED)
             elif sub_query.exists() == False:
                 
                 sana_date = datetime.strptime(sana,'%Y-%m-%d').date()
                 daily_ish = PatokDailyIsh.objects.get(created_at__date=sana_date,production_line=patok_id)
                 products = daily_ish.productlar.get(product=product_id)
-                products.real_ish += quantity
-                products.save()
 
                 soatlik_product = SoatlikProductPatok.objects.create(
                     patok_id = patok_id,
@@ -59,6 +58,7 @@ class Hourly(APIView):
                 )
                 queery = SoatlikProductPatok.objects.filter(created_at__date=sana_date,patok_id=patok_id,product_id=product_id)
                 real_ish = queery.aggregate(Sum('quantity'))['quantity__sum']
+                # print(real_ish)
                 soatlik_product.save()
                 data = {}
                 data['clock_id'] = clock_id                
@@ -75,6 +75,9 @@ class Hourly(APIView):
     def get(self,request):
         date = request.query_params.get('date')
         patok_id = request.query_params.get('patok_id')
+        print(patok_id,date,'patok_id,date')
+        if patok_id is None:
+            return Response({'error':'Patok id kiritilmagan'},status=status.HTTP_400_BAD_REQUEST    )
         if date is None:
             date = datetime.now().date()
         else:

@@ -1,21 +1,8 @@
-from rest_framework import viewsets, status, filters
+from rest_framework import  status
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Sum, F, Q
-from django.utils import timezone
-from django.db.models import Sum
 from rest_framework import views
-from datetime import timedelta
-from .models import (
-    Product, ProductionLine, PatokDailyIsh,
-    PatokDailyProducts, SoatlikProductPatok
-)
-from .serializers import (
-    ProductSerializer, ProductionLineSerializer,
-    PatokDailyIshSerializer, PatokDailyIshProductsSerializer,
-    SoatlikProductPatokSerializer, SoatlikProductPatokCreateUpdateSerializer
-)
+from .models import Product
+from .serializers import ProductSerializer
 
 class ProductView(views.APIView):
     serializer_class = ProductSerializer
@@ -42,7 +29,6 @@ class ProductDetail(views.APIView):
     queryset = Product.objects.all()
     
     def get_object(self,pk):
-        print(111111111111111111111111111111111111111111111111111)
         try:
             return Product.objects.get(pk=pk)
         except Product.DoesNotExist:

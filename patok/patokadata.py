@@ -1,20 +1,11 @@
-from django.db.models import Sum, F, Q, ExpressionWrapper, FloatField, Avg, Count
-from django.utils import timezone
+
+from django.db.models import Sum
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from datetime import datetime, timedelta
-from django.db.models.functions import TruncDate, TruncWeek, TruncMonth, TruncYear
-from .models import PatokDailyIsh, PatokDailyProducts
-
+from .models import PatokDailyIsh,SoatlikProductPatok
 class PatokAnalyticsView(APIView):
-    """
-    Patok ishlab chiqarish hisoboti uchun view
-    Turli vaqt oraliqlarida hisobot olish mumkin
-    """
     
-
-
 
     def get(self,request):
         try:
@@ -34,9 +25,11 @@ class PatokAnalyticsView(APIView):
                 'productlar__product'
             )
             analytics = {}  
-            analytics = {}
             for item in queryset:
                 day = str(item.created_at.date()) # Kunni aniqlash
+                # real ish hisobot
+                real_ish = SoatlikProductPatok.objects.filter(patokdailyish=item).aggregate(Sum('quantity'))['quantity__sum'] or 0
+                print(real_ish)
                 if day not in analytics:
                     analytics[day] = []  # Kun uchun bo'sh ro'yxat
 
@@ -53,7 +46,7 @@ class PatokAnalyticsView(APIView):
                             'product_id': product.product.id,
                             'product_time':product.product.time_per_unit,
                             'kutilayotgan': product.kutilayotgan,
-                            'real_ish': product.real_ish,
+                            'real_ish': real_ish,
                         }
                     ]
                 }
