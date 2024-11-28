@@ -1,9 +1,11 @@
+from typing import List
+
 from .views import ProductView,ProductDetail
 from .patokview import ProductionLineViewSet,ProductionLineDetail
 from .patokadata import PatokAnalyticsView
 from .hourly import Hourly,ClockView
 from .patokish import PatokDailyIshViewSet
-from django.urls import path
+from django.urls import path, URLPattern, URLResolver
 from rest_framework import routers
 from rest_framework.routers import DefaultRouter
 

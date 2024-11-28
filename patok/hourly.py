@@ -1,6 +1,6 @@
 from .serializers import HourlyProductPatokSerializer
 from .models import PatokDailyIsh
-from .models import SoatlikProductPatok,Product,ProductionLine,PatokDailyProducts,SoatlikProductPatok
+from .models import SoatlikProductPatok
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -40,8 +40,8 @@ class Hourly(APIView):
                 print(real_ish)
                 data['real_ish'] = real_ish
                 return Response(data,status=status.HTTP_201_CREATED)
-            elif sub_query.exists() == False:
-                
+            elif not sub_query.exists():
+
                 sana_date = datetime.strptime(sana,'%Y-%m-%d').date()
                 daily_ish = PatokDailyIsh.objects.get(created_at__date=sana_date,production_line=patok_id)
                 products = daily_ish.productlar.get(product=product_id)
@@ -60,11 +60,8 @@ class Hourly(APIView):
                 real_ish = queery.aggregate(Sum('quantity'))['quantity__sum']
                 # print(real_ish)
                 soatlik_product.save()
-                data = {}
-                data['clock_id'] = clock_id                
-                data['comment'] = comment
-                data['real_ish'] = real_ish
-                return Response(data,status=status.HTTP_201_CREATED) 
+                data = {'clock_id': clock_id, 'comment': comment, 'real_ish': real_ish}
+                return Response(data,status=status.HTTP_201_CREATED)
             else:
                 return Response({'error':'Bunday ma\'lumot topilmadi'},status=status.HTTP_400_BAD_REQUEST)          
         except Exception as e:
