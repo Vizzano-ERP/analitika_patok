@@ -50,6 +50,7 @@ class PatokDailyIshViewSet(APIView):
                 patok_daily_ish.save() 
                 
                 # Fetch the current statistics for the created PatokDailyIsh
+                total_minutes = patok_daily_ish.workers_count * patok_daily_ish.production_line.worker_time_per_day
                 response_data = {
                     "production_line_data": {
                         "id": patok_daily_ish.production_line.id,
@@ -59,15 +60,16 @@ class PatokDailyIshViewSet(APIView):
                         "updated_at": patok_daily_ish.production_line.updated_at
                     },
                     "workers_count": patok_daily_ish.workers_count,
-                    "total_minutes": patok_daily_ish.total_minutes,
+                    # "total_minutes": patok_daily_ish.total_minutes,
+                    'total_minutes': total_minutes,
                     'real_ish': patok_daily_ish.productlar.all().aggregate(Sum('real_ish'))['real_ish__sum'],
                     'expected_products': patok_daily_ish.productlar.all().aggregate(Sum('kutilayotgan'))['kutilayotgan__sum'],
-                    'products_count': patok_daily_ish.productlar.all().count(),
+                    'products_count': patok_daily_ish.soatlikproductpatok_set.all().aggregate(Sum('quantity'))['quantity__sum'],
                     "products": [
                         {
                             "product_id": product.product.id,
                             "product_name": product.product.name,
-                            "kutilayotgan": product.kutilayotgan,
+                            "kutilayotgan": total_minutes / product.product.time_per_unit,
                             "real_ish": product.real_ish,
                         } 
                         for product in patok_daily_ish.productlar.all()
