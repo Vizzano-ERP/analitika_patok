@@ -210,23 +210,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-<<<<<<< HEAD
-# Security settings
-#SECURE_SSL_REDIRECT = True
-#SESSION_COOKIE_SECURE = True
-#CSRF_COOKIE_SECURE = True
-#SECURE_BROWSER_XSS_FILTER = True
-#X_FRAME_OPTIONS = 'DENY'
-=======
-# # Security settings
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_BROWSER_XSS_FILTER = True
-# X_FRAME_OPTIONS = 'DENY'
->>>>>>> cd7377a2e2afbea5c8ed837f08d76ea173bc51ef
-
-# Logging configuration
+#Logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
